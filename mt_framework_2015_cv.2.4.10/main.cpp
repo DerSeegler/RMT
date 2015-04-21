@@ -7,6 +7,7 @@
 #include "opencv2/opencv.hpp"
 #include <time.h>
 #include <math.h>
+#include <windows.h>
 
 int main(void)
 {
@@ -23,7 +24,7 @@ int main(void)
 	double videoWidth = cap.get(CV_CAP_PROP_FRAME_WIDTH);
 	double videoHeight = cap.get(CV_CAP_PROP_FRAME_HEIGHT);
 
-	cv::Mat frame, original, grey;
+	cv::Mat frame, original, grey, result, blurredCopyOfFirstDiff;
 
 	int currentFrame = 0; // frame counter
 	clock_t ms_start, ms_end, ms_time; // time
@@ -32,6 +33,8 @@ int main(void)
 
 	for (;;)
 	{
+		Sleep(50);
+
 		ms_start = clock(); // time start
 
 		cap >> frame; // get a new frame from the videostream
@@ -42,16 +45,46 @@ int main(void)
 			break;
 		}
 
-		original = frame.clone(); // copy frame to original
+		if (currentFrame == 0) {
+			original = frame.clone(); // copy frame to original
+			cvtColor(original, original, CV_BGR2GRAY); // convert frame to greyscale image (copies the image in the process!)
+		}
 
-		cvtColor(original, grey, CV_BGR2GRAY); // convert frame to greyscale image (copies the image in the process!)
+		cvtColor(frame, frame, CV_BGR2GRAY);
 
-		//--------------------------
-		// your code goes here
-		//--------------------------
+		cv::absdiff(original, frame, result);
+
+		cv::blur(result, blurredCopyOfFirstDiff, cv::Size(38, 38));
+
+		cv::absdiff(result, blurredCopyOfFirstDiff, result);
+
+		cv::threshold(result, result, 16.0, 255.0, cv::THRESH_BINARY);
+
+		std::vector<std::vector<cv::Point>> contours;
+		std::vector<cv::Vec4i> hierarchy;
+
+		findContours(result, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
+		// iterate through all the top-level contours -> "hierarchy" may not be empty!)
+		if (hierarchy.size() > 0)
+		{
+			for (int idx = 0; idx >= 0; idx = hierarchy[idx][0])
+			{
+				// check contour size (number of points) and area ("blob" size)
+				if (cv::contourArea(cv::Mat(contours.at(idx))) > 30 && contours.at(idx).size() > 4)
+				{
+					ellipse(result, cv::fitEllipse(cv::Mat(contours.at(idx))), cv::Scalar(0, 0, 255), 1, 8);
+					// fit & draw ellipse to contour at index
+					drawContours(result, contours, idx, cv::Scalar(255, 0, 0), 1, 8,
+						hierarchy);
+					// draw contour at index
+				}
+			}
+		}
 
 		if (cv::waitKey(1) == 27) // wait for user input
 		{
+
+
 			std::cout << "TERMINATION: User pressed ESC\n";
 			break;
 		}
@@ -62,10 +95,10 @@ int main(void)
 		ms_end = clock();
 		ms_time = ms_end - ms_start;
 
-		putText(original, "frame #" + (std::string)_itoa(currentFrame, buffer, 10), cvPoint(0, 15), cv::FONT_HERSHEY_PLAIN, 1, CV_RGB(255, 255, 255), 1, 8); // write framecounter to the image (useful for debugging)
-		putText(original, "time per frame: " + (std::string)_itoa(ms_time, buffer, 10) + "ms", cvPoint(0, 30), cv::FONT_HERSHEY_PLAIN, 1, CV_RGB(255, 255, 255), 1, 8); // write calculation time per frame to the image
-	
-		imshow("window", original); // render the frame to a window	
+		putText(result, "frame #" + (std::string)_itoa(currentFrame, buffer, 10), cvPoint(0, 15), cv::FONT_HERSHEY_PLAIN, 1, CV_RGB(255, 255, 255), 1, 8); // write framecounter to the image (useful for debugging)
+		putText(result, "time per frame: " + (std::string)_itoa(ms_time, buffer, 10) + "ms", cvPoint(0, 30), cv::FONT_HERSHEY_PLAIN, 1, CV_RGB(255, 255, 255), 1, 8); // write calculation time per frame to the image
+
+		imshow("window", result); // render the frame to a window	
 	}
 
 	std::cout << "SUCCESS: Program terminated like expected.\n";
