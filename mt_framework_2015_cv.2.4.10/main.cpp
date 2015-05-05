@@ -8,6 +8,53 @@
 #include <time.h>
 #include <math.h>
 #include <windows.h>
+#include <algorithm>
+
+struct Blob
+{
+	int id;
+	cv::Point2f position;
+	bool found;
+	int notFoundCount;
+};
+
+std::vector<Blob> blobs;
+
+
+double getDistance(cv::Point2f source, cv::Point2f target) {
+	return cv::norm(source - target);
+}
+
+int findNearestBlob(cv::Point2f currentBlobCenter) {
+	for (int i = 0; i < blobs.size(); i++)
+	{
+		Blob blob = blobs.at(i);
+		if (getDistance(blob.position, currentBlobCenter) < 25) {
+			blobs.at(i).found = true;
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+void deleteNotFoundBlobs() {
+	for (int i = 0; i < blobs.size(); i++)
+	{
+		if (!blobs.at(i).found) {
+			if (blobs.at(i).notFoundCount > 2) {
+				blobs.erase(blobs.begin() + i);
+			}
+			else {
+				blobs.at(i).notFoundCount++;
+			}
+		}
+		else {
+			blobs.at(i).found = false;
+			blobs.at(i).notFoundCount = 0;
+		}
+	}
+}
 
 int main(void)
 {
@@ -33,7 +80,7 @@ int main(void)
 
 	for (;;)
 	{
-		Sleep(50);
+		Sleep(30);
 
 		ms_start = clock(); // time start
 
@@ -54,7 +101,7 @@ int main(void)
 
 		cv::absdiff(original, frame, result);
 
-		cv::blur(result, blurredCopyOfFirstDiff, cv::Size(38, 38));
+		cv::blur(result, blurredCopyOfFirstDiff, cv::Size(40, 40));
 
 		cv::absdiff(result, blurredCopyOfFirstDiff, result);
 
@@ -72,19 +119,40 @@ int main(void)
 				// check contour size (number of points) and area ("blob" size)
 				if (cv::contourArea(cv::Mat(contours.at(idx))) > 30 && contours.at(idx).size() > 4)
 				{
-					ellipse(result, cv::fitEllipse(cv::Mat(contours.at(idx))), cv::Scalar(0, 0, 255), 1, 8);
+					cv::RotatedRect rec = cv::fitEllipse(cv::Mat(contours.at(idx)));
+					ellipse(result, rec, cv::Scalar(0, 0, 255), 1, 8);
+
+					Blob currentBlob;
+					int foundIndex = findNearestBlob(rec.center);
+					if (foundIndex >= 0) {
+						currentBlob = blobs.at(foundIndex);
+						blobs.at(foundIndex).position = rec.center;
+					}
+					else {
+						if (blobs.size() > 0) {
+							currentBlob = { blobs.at(blobs.size() - 1).id + 1, rec.center, false, 0 };
+						}
+						else {
+							currentBlob = { 1, rec.center, false, 0 };
+						}
+
+						blobs.push_back(currentBlob);
+					}
+
+					cv::putText(result, (std::string)_itoa(currentBlob.id, buffer, 10), cv::Point2i(rec.center.x + rec.size.width / 2 + 3, rec.center.y + rec.size.height / 2 + 3), cv::FONT_HERSHEY_PLAIN, 1, CV_RGB(255, 255, 255), 1, 8);
+
 					// fit & draw ellipse to contour at index
 					drawContours(result, contours, idx, cv::Scalar(255, 0, 0), 1, 8,
 						hierarchy);
 					// draw contour at index
 				}
 			}
+
+			deleteNotFoundBlobs();
 		}
 
 		if (cv::waitKey(1) == 27) // wait for user input
 		{
-
-
 			std::cout << "TERMINATION: User pressed ESC\n";
 			break;
 		}
