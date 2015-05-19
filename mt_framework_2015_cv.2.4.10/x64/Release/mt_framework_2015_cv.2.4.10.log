@@ -1,11 +1,13 @@
-﻿Build started 05.05.2015 16:30:38.
-     1>Project "D:\mt_framework_2015_cv.2.4.10\mt_framework_2015_cv.2.4.10\mt_framework_2015_cv.2.4.10.vcxproj" on node 2 (Build target(s)).
+﻿Build started 19.05.2015 17:20:55.
+     1>Project "D:\Praktikum Multitouch\Praktikum2\mt_framework_2015_cv.2.4.10\mt_framework_2015_cv.2.4.10\mt_framework_2015_cv.2.4.10.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /I"C:\SDK\opencv-2.4.10\build\include" /I..\TUIO /I..\oscpack /Zi /nologo /W3 /WX- /O2 /Oi /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Release\\" /Fd"x64\Release\vc120.pdb" /Gd /TP /errorReport:prompt main.cpp
          main.cpp
-     1>main.cpp(142): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>main.cpp(31): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>main.cpp(32): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>main.cpp(244): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"D:\mt_framework_2015_cv.2.4.10\x64\Release\mt_framework_2015_cv.2.4.10.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\SDK\opencv-2.4.10\build\x64\vc12\lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\mt_framework_2015_cv.2.4.10\x64\Release\mt_framework_2015_cv.2.4.10.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\mt_framework_2015_cv.2.4.10\x64\Release\mt_framework_2015_cv.2.4.10.lib" /MACHINE:X64 opencv_core2410.lib opencv_imgproc2410.lib opencv_highgui2410.lib ws2_32.lib winmm.lib x64\Release\NetworkingUtils.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Praktikum Multitouch\Praktikum2\mt_framework_2015_cv.2.4.10\x64\Release\mt_framework_2015_cv.2.4.10.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\SDK\opencv-2.4.10\build\x64\vc12\lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\Praktikum Multitouch\Praktikum2\mt_framework_2015_cv.2.4.10\x64\Release\mt_framework_2015_cv.2.4.10.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Praktikum Multitouch\Praktikum2\mt_framework_2015_cv.2.4.10\x64\Release\mt_framework_2015_cv.2.4.10.lib" /MACHINE:X64 opencv_core2410.lib opencv_imgproc2410.lib opencv_highgui2410.lib ws2_32.lib winmm.lib x64\Release\NetworkingUtils.obj
          x64\Release\UdpSocket.obj
          x64\Release\OscOutboundPacketStream.obj
          x64\Release\OscTypes.obj
@@ -14,9 +16,9 @@
          x64\Release\main.obj
          Generating code
          Finished generating code
-         mt_framework_2015_cv.2.4.10.vcxproj -> D:\mt_framework_2015_cv.2.4.10\x64\Release\mt_framework_2015_cv.2.4.10.exe
-     1>Done Building Project "D:\mt_framework_2015_cv.2.4.10\mt_framework_2015_cv.2.4.10\mt_framework_2015_cv.2.4.10.vcxproj" (Build target(s)).
+         mt_framework_2015_cv.2.4.10.vcxproj -> D:\Praktikum Multitouch\Praktikum2\mt_framework_2015_cv.2.4.10\x64\Release\mt_framework_2015_cv.2.4.10.exe
+     1>Done Building Project "D:\Praktikum Multitouch\Praktikum2\mt_framework_2015_cv.2.4.10\mt_framework_2015_cv.2.4.10\mt_framework_2015_cv.2.4.10.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:01.36
+Time Elapsed 00:00:01.54
